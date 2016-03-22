@@ -10,16 +10,19 @@ namespace InterviewPractice
     {
         public String GetNumbersUsingWhere(String stringToAnalyze)
         {
+            stringToAnalyze = stringToAnalyze ?? String.Empty;
             IEnumerable<char> onlyNumberCharacters = stringToAnalyze.Where(x => Char.IsDigit(x));
             return String.Concat(onlyNumberCharacters);
         }
 
         public String GetNumbersUsingForEachLoop(String stringToAnalyze)
         {
+            stringToAnalyze = stringToAnalyze ?? String.Empty;
             StringBuilder resultStringBuilder = new StringBuilder();
             foreach (char charToAnalyze in stringToAnalyze) 
             {
-                if (Char.IsDigit(charToAnalyze)) {
+                if (Char.IsDigit(charToAnalyze)) 
+                {
                     resultStringBuilder.Append(charToAnalyze);
                 }
             }
@@ -28,6 +31,7 @@ namespace InterviewPractice
 
         public String GetNumbersUsingForLoop(String stringToAnalyze)
         {
+            stringToAnalyze = stringToAnalyze ?? String.Empty;
             StringBuilder resultStringBuilder = new StringBuilder();
             for (int i = 0; i < stringToAnalyze.Length; i++)
             {
@@ -43,6 +47,7 @@ namespace InterviewPractice
 
         public String GetNumbersUsingLinq(String stringToAnalyze)
         {
+            stringToAnalyze = stringToAnalyze ?? String.Empty;
             IEnumerable<char> stringQuery = from characterToAnalyze in stringToAnalyze
                 where Char.IsDigit(characterToAnalyze)
                 select characterToAnalyze;
@@ -51,6 +56,7 @@ namespace InterviewPractice
 
         public int CountWordsInString(String wordToFind, String stringToSearch)
         {
+            stringToSearch = stringToSearch ?? String.Empty;
             string[] sourceWords = stringToSearch.Split(new char[] { '.', '?', '!', ' ', ';', ':', ',' }, StringSplitOptions.RemoveEmptyEntries);
             var matchQuery = from word in sourceWords
                              where word.ToLowerInvariant() == wordToFind.ToLowerInvariant()
@@ -60,6 +66,7 @@ namespace InterviewPractice
 
         public String SortWordsAlphabetically(String stringToSearch)
         {
+            stringToSearch = stringToSearch ?? String.Empty;
             string[] sourceWords = stringToSearch.Split(new char[] { '.', '?', '!', ' ', ';', ':', ',' }, StringSplitOptions.RemoveEmptyEntries);
             var sortQuery = from word in sourceWords
                             orderby word
@@ -69,6 +76,7 @@ namespace InterviewPractice
 
         public Boolean SentanceContainsWords(String stringToSearchThrough, string[] wordsToMatch)
         {
+            stringToSearchThrough = stringToSearchThrough ?? String.Empty;
             string[] sentences = stringToSearchThrough.Split(new char[] { '.', '?', '!' });
             IEnumerable<String> sentanceQuery = from sentence in sentences
                                 let w = sentence.Split(new char[] { ' ' },

@@ -8,7 +8,7 @@ namespace InterviewPractice
 {
     public class FizBuzz
     {
-        public String getNumber(int aValue)
+        public String GetStringValue(int aValue)
         {
             if (aValue == 0)
             {
@@ -36,7 +36,7 @@ namespace InterviewPractice
         {
             for (int i = 1; i <= 100; i++)
             {
-                Console.WriteLine(this.getNumber(i));
+                Console.WriteLine(this.GetStringValue(i));
             }
         }
     }

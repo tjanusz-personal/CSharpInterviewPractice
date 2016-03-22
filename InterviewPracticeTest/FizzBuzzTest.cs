@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using InterviewPractice;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 namespace InterviewPracticeTest
 {
@@ -17,42 +18,47 @@ namespace InterviewPracticeTest
             buzz = new FizBuzz();
         }
 
-        [TestMethod]
-        public void TestGetNumberReturnsFizzBuzzCorrectly()
+        private void runGetStringValueScenario(List<int> numbersToVerify, String valueToAssert)
         {
-            List<int> multiplesOfThree = new List<int> { 15, 30, 45, 60, 75, 90 };
-            multiplesOfThree.ForEach(x =>
+            numbersToVerify.ForEach(x =>
             {
-                Assert.AreEqual(buzz.getNumber(x), "FizzBuzz");
+                Assert.AreEqual(buzz.GetStringValue(x), valueToAssert);
             });
+
         }
 
         [TestMethod]
-        public void TestGetNumberReturnsFizzCorrectly()
+        public void TestGetStringValueReturnsFizzBuzzValuesCorrectly2()
         {
-            List<int> multiplesOfThree = new List<int> { 3, 6, 9, 12, 18, 21, 24, 27, 33, 36, 39, 42, 48, 51 };
-            multiplesOfThree.ForEach( x => {
-                Assert.AreEqual(buzz.getNumber(x), "Fizz");
-            });
+            List<int> numbersDivisibleBy5And3 = Enumerable.Range(1, 100).Where(x => (x % 3) == 0 && (x % 5) == 0).ToList();
+            Assert.AreEqual(6, numbersDivisibleBy5And3.Count);
+            runGetStringValueScenario(numbersDivisibleBy5And3, "FizzBuzz");
         }
 
         [TestMethod]
-        public void TestGetNumberReturnsBuzzCorrectly()
+        public void TestGetStringValueReturnsFizzCorrectly()
         {
-            List<int> multiplesOfFive = new List<int> { 5, 10, 20, 25, 35, 40, 50, 55, 65, 70, 80, 85, 95 };
-            multiplesOfFive.ForEach(x =>
-            {
-                Assert.AreEqual(buzz.getNumber(x), "Buzz");
-            });
+            List<int> numbersDivisibleBy3Only = Enumerable.Range(1, 100).Where(x => (x % 3) == 0 && (x % 5) != 0).ToList();
+            Assert.AreEqual(27, numbersDivisibleBy3Only.Count);
+            runGetStringValueScenario(numbersDivisibleBy3Only, "Fizz");
         }
 
         [TestMethod]
-        public void TestGetNumberReturnsNonFizzBuzzNumbersCorrectly()
+        public void TestGetStringReturnsBuzzCorrectly()
         {
-            List<int> multiplesOfFive = new List<int> { 0, 1, 2, 4, 7, 8, 11, 13, 14, 16, 17, 19, 22 };
-            multiplesOfFive.ForEach(x =>
+            List<int> numbersDivisibleBy5Only = Enumerable.Range(1, 100).Where(x => (x % 5) == 0 && (x % 3) != 0).ToList();
+            Assert.AreEqual(14, numbersDivisibleBy5Only.Count);
+            runGetStringValueScenario(numbersDivisibleBy5Only, "Buzz");
+        }
+
+        [TestMethod]
+        public void TestGetStringReturnsNonFizzBuzzNumbersCorrectly()
+        {
+            List<int> numbersNotDivisibleBy5Or3 = Enumerable.Range(1, 100).Where(x => (x % 5) != 0 && (x % 3) != 0).ToList();
+            Assert.AreEqual(53, numbersNotDivisibleBy5Or3.Count);
+            numbersNotDivisibleBy5Or3.ForEach(x =>
             {
-                Assert.AreEqual(x.ToString(), buzz.getNumber(x));
+                Assert.AreEqual(x.ToString(), buzz.GetStringValue(x));
             });
         }
     }

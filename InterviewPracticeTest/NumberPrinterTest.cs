@@ -20,93 +20,113 @@ namespace InterviewPracticeTest
         [TestMethod]
         public void GetNumbersUsingWhereReturnsOnlyNumbersFromString()
         {
-            String actual = printer.GetNumbersUsingWhere("Hello12This3");
-            Assert.AreEqual("123", actual);
+            Assert.AreEqual("123", printer.GetNumbersUsingWhere("Hello12This3"));
+        }
+
+        [TestMethod]
+        public void GetNumbersUsingWhereReturnsEmptyStringWithNullString()
+        {
+            Assert.AreEqual("", printer.GetNumbersUsingWhere(null));
         }
 
         [TestMethod]
         public void GetNumbersUsingForEachLoopReturnsOnlyNumbersFromString()
         {
-            String actual = printer.GetNumbersUsingForEachLoop("Hello12This3");
-            Assert.AreEqual("123", actual);
+            Assert.AreEqual("123", printer.GetNumbersUsingForEachLoop("Hello12This3"));
+        }
+
+        [TestMethod]
+        public void GetNumbersUsingForEachLoopReturnsEmptyStringWithNullString()
+        {
+            Assert.AreEqual("", printer.GetNumbersUsingForEachLoop(null));
         }
 
         [TestMethod]
         public void GetNumbersUsingForLoopReturnsOnlyNumbersFromString()
         {
-            String actual = printer.GetNumbersUsingForLoop("Hello12This3");
-            Assert.AreEqual("123", actual);
+            Assert.AreEqual("123", printer.GetNumbersUsingForLoop("Hello12This3"));
+        }
+
+        [TestMethod]
+        public void GetNumbersUsingForLoopReturnsEmptyStringWithNullString()
+        {
+            Assert.AreEqual("", printer.GetNumbersUsingForLoop(null));
         }
 
         [TestMethod]
         public void GetNumbersUsingLinqReturnsOnlyNumbersFromString()
         {
-            String actual = printer.GetNumbersUsingLinq("Hello12This3");
-            Assert.AreEqual("123", actual);
+            Assert.AreEqual("123", printer.GetNumbersUsingLinq("Hello12This3"));
+        }
+
+        [TestMethod]
+        public void GetNumbersUsingLinqReturnsEmptyStringWithEmptyString()
+        {
+            Assert.AreEqual("", printer.GetNumbersUsingLinq(""));
+        }
+
+        [TestMethod]
+        public void GetNumbersUsingLinqReturnsEmptyStringWithNull()
+        {
+            Assert.AreEqual("", printer.GetNumbersUsingLinq(null));
         }
 
         [TestMethod]
         public void CountWordsInStringReturnsCorrectCountWithMatchingWordsRegardlessOfCase()
         {
-            int actual = printer.CountWordsInString("Hello", "Hello Hello Helll HELLO To You");
-            Assert.AreEqual(3, actual);
+            Assert.AreEqual(3, printer.CountWordsInString("Hello", "Hello Hello Helll HELLO To You"));
         }
 
         [TestMethod]
         public void CountWordsInStringReturnsCorrectCountWithNoMatchingWords()
         {
-            int actual = printer.CountWordsInString("HelloX", "Hello Hello Helll To You");
-            Assert.AreEqual(0, actual);
+            Assert.AreEqual(0, printer.CountWordsInString("HelloX", "Hello Hello Helll To You"));
         }
 
         [TestMethod]
         public void CountWordsInStringReturnsCorrectCountWithSingleString()
         {
-            int actual = printer.CountWordsInString("Hello", "HelloHelloHelllToYou");
-            Assert.AreEqual(0, actual);
+            Assert.AreEqual(0, printer.CountWordsInString("Hello", "HelloHelloHelllToYou"));
         }
 
         [TestMethod]
-        public void SortWordsAlphabeticallyCorrectlyWorks()
+        public void CountWordsInStringReturnsCorrectCountWithNullString()
+        {
+            Assert.AreEqual(0, printer.CountWordsInString("Hello", null));
+        }
+
+        [TestMethod]
+        public void SortWordsAlphabeticallySortsWordsInAlphabeticalOrder()
         {
             String sortedResult = printer.SortWordsAlphabetically("AAA DDD CCC BBB");
             Assert.AreEqual("AAA BBB CCC DDD", sortedResult);
         }
 
         [TestMethod]
-        public void SentanceContainsWordsReturnsCorrectResults()
+        public void SortWordsAlphabeticallyReturnsEmptyStringWithNullArgument()
+        {
+            Assert.AreEqual("", printer.SortWordsAlphabetically(null));
+        }
+
+        [TestMethod]
+        public void SentanceContainsWordsReturnsTrueWhenSentanceContainsWords()
         {
             string[] wordsToFind = { "AAA", "CCC" };
-            Boolean result = printer.SentanceContainsWords("AAA BBB CCC. AAA BBB DDD.", wordsToFind);
-            Assert.IsTrue(result);
+            Assert.IsTrue(printer.SentanceContainsWords("AAA BBB CCC. AAA BBB DDD.", wordsToFind));
         }
 
         [TestMethod]
-        public void IntersectOnTwoEnumerablesExamples()
+        public void SentanceContainsWordsReturnsFalseWhenSentanceHasNoWords()
         {
-            string[] someWords = { "AAA", "CCC" };
-            string[] moreWords = { "AAA", "DDD" };
-            IEnumerable<string> stringsInCommon = someWords.Intersect(moreWords);
-            Assert.AreEqual(1, stringsInCommon.Count());
-            Assert.IsTrue(stringsInCommon.Any());
-            Assert.AreEqual("AAA", stringsInCommon.First());
-
-            string[] someWords2 = { "AAA", "CCC", "DDD", "AAA" };
-            stringsInCommon = someWords2.Intersect(moreWords);
-            Assert.AreEqual(2, stringsInCommon.Count());
-            string[] matchedArray = stringsInCommon.ToArray();
-            CollectionAssert.AreEqual(moreWords, matchedArray);
+            string[] wordsToFind = { "AAA", "CCC" };
+            Assert.IsFalse(printer.SentanceContainsWords("BBB. AAA DDD.", wordsToFind));
         }
 
         [TestMethod]
-        public void ExceptOnTwoEnumerablesExamples()
+        public void SentanceContainsWordsReturnsFalseWhenSentanceIsNull()
         {
-            string[] someWords = { "AAA", "CCC", "DDD", "EEE" };
-            string[] moreWords = { "AAA", "DDD" };
-            IEnumerable<string> stringsNotInCommon = someWords.Except(moreWords);
-            Assert.AreEqual(2, stringsNotInCommon.Count());
-            Assert.IsTrue(stringsNotInCommon.Any());
-            Assert.AreEqual("CCC", stringsNotInCommon.First());
+            string[] wordsToFind = { "AAA", "CCC" };
+            Assert.IsFalse(printer.SentanceContainsWords(null, wordsToFind));
         }
 
     }
