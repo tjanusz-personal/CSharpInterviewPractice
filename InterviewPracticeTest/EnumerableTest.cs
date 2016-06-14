@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using InterviewPractice;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
 
 namespace InterviewPracticeTest
 {
@@ -58,8 +59,8 @@ namespace InterviewPracticeTest
         public void AnyReturnsTrueForFoundItem()
         {
             Assert.IsTrue(getStringList().Any());
-            Assert.IsTrue(getStringList().Contains("AAA"));
-            Assert.IsFalse(getStringList().Contains("DDD"));
+            Assert.IsTrue(getStringList().Any(s => s.Length == 3));
+            Assert.IsTrue(getStringList().Any(s => s.Equals("AAA")));
         }
 
         [TestMethod]
@@ -73,6 +74,11 @@ namespace InterviewPracticeTest
         public void CountReturnsTotalCountOfStrings()
         {
             Assert.AreEqual(3, getStringList().Count());
+        }
+
+        [TestMethod]
+        public void CountReturnsTotalCountOfStringsWithLength4()
+        {
             Assert.AreEqual(2, getStringList().Count(s => s.Length == 4));
         }
 
@@ -234,11 +240,155 @@ namespace InterviewPracticeTest
         }
 
         [TestMethod]
-        public void RepeatRepeatsItem()
+        public void RepeatRepeatsItemSpecified()
         {
             List<String> repeatedList = Enumerable.Repeat("One", 3).ToList();
             List<String> expectedStrings = new List<String>() { "One", "One", "One" };
             CollectionAssert.AreEqual(expectedStrings, repeatedList);
         }
+
+        [TestMethod]
+        public void AggregateAggregatesAcrossItems()
+        {
+            List<String> stringList = new List<String>() { "One", "Two", "Three", "Four", "Five" };
+            String combinedString = stringList.Aggregate((fullString, nextString) => fullString + " " + nextString);
+            Assert.AreEqual("One Two Three Four Five", combinedString);
+            int totalLength = stringList.Aggregate(0, (lengthTotal, nextString) => lengthTotal += nextString.Length);
+            Assert.AreEqual(19, totalLength);
+            String actualLongestString = stringList.Aggregate("", (longestString, nextString) => nextString.Length > longestString.Length ? nextString : longestString);
+            Assert.AreEqual("Three", actualLongestString);
+        }
+
+        [TestMethod]
+        public void ContainsReturnsIfStringListHasStringStartingWithT()
+        {
+            List<String> stringList = new List<String>() { "One", "Two", "Three", "Four", "Five" };
+            Assert.IsTrue(stringList.Contains("One"));
+            StringStartsWithComparer startsWithComparer = new StringStartsWithComparer();
+            Assert.IsTrue(stringList.Contains("O", startsWithComparer));
+        }
+
+        class StringStartsWithComparer : IEqualityComparer<String> {
+            public bool Equals(String first, String second)
+            {
+                return first.StartsWith(second);
+            }
+
+            public int GetHashCode(String first)
+            {
+                return first.GetHashCode();
+            }
+        }
+
+        [TestMethod]
+        public void WhereReturnsCorrectItems()
+        {
+            List<String> stringList = new List<String>() { "One", "Two", "Three", "Four", "Five" };
+            var stringsWithT = from strings in stringList where strings.Contains("T") orderby strings select strings;
+            List<String> expectedStrings = new List<String>() { "Three", "Two" };
+            CollectionAssert.AreEqual(expectedStrings, stringsWithT.ToList());
+            List<String> stringsWithT2 = stringList.Where(str => str.Contains("T")).ToList();
+            CollectionAssert.AreEquivalent(expectedStrings, stringsWithT2.ToList());
+        }
+
+        [TestMethod]
+        public void GroupByGroupsStringsArrayByCountOfStrings()
+        {
+            List<String> stringList = new List<String>() { "One", "Two", "One", "Three", "Two" };
+            Dictionary<String, int> countOfStringsDictionary = stringList.GroupBy(theString => theString)
+                .ToDictionary(x => x.Key, x => x.Count());
+
+            Dictionary<String, int> expectedDictionary = new Dictionary<String, int> () {
+                { "One", 2}, { "Two", 2}, { "Three", 1}
+            };
+            CollectionAssert.AreEquivalent(expectedDictionary, countOfStringsDictionary);
+        }
+
+        [TestMethod]
+        public void GroupByGroupsStringsArrayByCountOfStringsUsingResultSelector()
+        {
+            List<String> stringList = new List<String>() { "One", "Two", "One", "Three", "Two" };
+            Dictionary<String, int> countOfStringsDictionary = stringList.GroupBy(
+                theString => theString,
+                (theKey, theStringGrouping) => new {
+                    OriginalKeyString = theKey,
+                    CountOfStrings = theStringGrouping.Count()
+                })
+                .ToDictionary(x => x.OriginalKeyString, x => x.CountOfStrings);
+
+            Dictionary<String, int> expectedDictionary = new Dictionary<String, int>() {
+                { "One", 2}, { "Two", 2}, { "Three", 1}
+            };
+            CollectionAssert.AreEquivalent(expectedDictionary, countOfStringsDictionary);
+        }
+
+        [TestMethod]
+        public void OfTypeFiltersOutNonStrings()
+        {
+            ArrayList myList = new ArrayList() { "One", 2, "Three", 4 };
+            List<String> stringList = myList.OfType<String>().ToList();
+            List<String> expectedStringList = new List<String>() { "One", "Three" };
+            CollectionAssert.AreEquivalent(expectedStringList, stringList);
+        }
+
+        [TestMethod]
+        public void ToLookupTransformsStringListIntoLookupIndexedByFirstCharacter()
+        {
+            List<String> stringList = new List<String>() { "One", "Two", "Three", "Four" };
+            ILookup<char, string> stringsByCharLookup = stringList.ToLookup(str => Convert.ToChar(str.Substring(0, 1)),
+                p => p);
+            List<String> oList = new List<String>() { "One" };
+            CollectionAssert.AreEqual(oList, stringsByCharLookup['O'].ToList());
+            List<String> tList = new List<String>() { "Two", "Three" };
+            CollectionAssert.AreEqual(tList, stringsByCharLookup['T'].ToList());
+            List<String> fList = new List<String>() { "Four" };
+            CollectionAssert.AreEqual(fList, stringsByCharLookup['F'].ToList());
+        }
+
+        [TestMethod]
+        public void ProjectionExampleReturningStringsAndLengthsFromLINQStatement()
+        {
+            List<String> stringList = new List<String>() { "One", "Two", "Three", "Four" };
+            var stringsWithLengths = from str in stringList select new { Value = str, Length = str.Length };
+            List<dynamic> expectedDataList = new List<dynamic>() {
+                { new { Value = "One", Length = 3} }, 
+                { new { Value = "Two", Length = 3} }, 
+                { new { Value = "Three", Length = 5} },
+                { new { Value = "Four", Length = 4} }
+            };
+            dynamic dynExample = new { Ex = "hello", Size = 12 };
+            CollectionAssert.AreEquivalent(expectedDataList, stringsWithLengths.ToList());
+        }
+
+        [TestMethod]
+        public void UnionReturnsUniqueCombinationOfElements()
+        {
+            List<String> stringList = new List<String>() { "One", "Three", "Four" };
+            List<String> stringList2 = new List<String>() { "One", "Two", "Three" };
+            List<String> unionStringList = stringList.Union(stringList2).ToList();
+            List<String> expectedList = new List<String>() { "One", "Two", "Three", "Four" };
+            CollectionAssert.AreEquivalent(expectedList, unionStringList);
+        }
+
+        [TestMethod]
+        public void UnionReturnsUniqueCombinationOfStringElementsCaseInsensitive()
+        {
+            List<String> stringList = new List<String>() { "One" };
+            List<String> stringList2 = new List<String>() { "ONE" };
+            List<String> unionStringList = stringList.Union(stringList2).ToList();
+            List<String> expectedList = new List<String>() { "One", "ONE" };
+            CollectionAssert.AreEquivalent(expectedList, unionStringList);
+        }
+
+        [TestMethod]
+        public void ConcatReturnsBothSetsOfValues()
+        {
+            List<String> stringList = new List<String>() { "One", "Two" };
+            List<String> stringList2 = new List<String>() { "One", "Two", "Three" };
+            List<String> concatStringList = stringList.Concat(stringList2).ToList();
+            List<String> expectedList = new List<String>() { "One", "Two", "One", "Two", "Three" };
+            CollectionAssert.AreEquivalent(expectedList, concatStringList);
+        }
+
     }
 }
