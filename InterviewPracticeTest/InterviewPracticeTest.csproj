@@ -57,6 +57,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NumberPrinterTest.cs" />
     <Compile Include="PowerOfTwoTest.cs" />
+    <Compile Include="StockPricing.cs" />
+    <Compile Include="TwoSum.cs" />
+    <Compile Include="TwoSumTest.cs" />
+    <Compile Include="StockPricingTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterviewPractice\InterviewPractice.csproj">
